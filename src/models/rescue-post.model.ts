@@ -3,7 +3,7 @@ import mongoose, { Document, Schema, model } from "mongoose";
 export interface IComment extends Document {
   commenter: mongoose.Schema.Types.ObjectId;
   name: string;
-  content: string;
+  comment: string;
 }
 export interface ILike {
   user: mongoose.Types.ObjectId;
@@ -23,12 +23,7 @@ interface ILocation extends Document {
   lng: number;
   lat: number;
 }
-// const likeSchema: Schema<ILike> = new Schema({
-//   user: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//   },
-// });
+
 const locationSchema: Schema<ILocation> = new Schema({
   lng: Number,
   lat: Number,
@@ -43,7 +38,7 @@ const commentSchema: Schema<IComment> = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    content: String,
+    comment: { type: String, required: true },
   },
   {
     timestamps: true,

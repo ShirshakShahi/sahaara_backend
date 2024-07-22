@@ -6,7 +6,6 @@ import { User } from "../models/user.model";
 import mongoose from "mongoose";
 
 const getAllRescuePosts = asyncHandler(async (req: Request, res: Response) => {
-  console.log("Fetching all rescue posts");
   const rescuePosts = await RescuePost.find({}).populate({
     path: "rescuePostAuthor",
     select: "username type profile",
@@ -177,9 +176,10 @@ const addComment = asyncHandler(async (req: AuthRequest, res: Response) => {
   let user = await User.findById(req.user._id);
 
   const newComment = {
+    _id: new mongoose.Types.ObjectId(),
     name: user?.username,
     commenter: req.user._id,
-    content: req.body.content,
+    comment: String(req.body.comment),
   };
 
   post.comments.push(newComment as IComment);
@@ -261,8 +261,8 @@ const updateComment = asyncHandler(async (req: AuthRequest, res: Response) => {
       .json({ message: "Invalid Credentials", success: false });
   }
 
-  post.comments[commentIndex].content =
-    req.body.content || post.comments[commentIndex].content;
+  post.comments[commentIndex].comment =
+    req.body.comment || post.comments[commentIndex].comment;
 
   const updatedPost = await post.save();
 
@@ -295,7 +295,6 @@ const addLike = asyncHandler(async (req: AuthRequest, res: Response) => {
     if (
       rescuePost.likes.filter((like: ILike) => {
         if (!like.user) {
-          console.error("A like without a user found:", like);
           return false;
         }
 
